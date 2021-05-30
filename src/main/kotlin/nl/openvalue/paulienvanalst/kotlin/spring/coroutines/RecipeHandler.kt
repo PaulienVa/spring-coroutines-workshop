@@ -2,6 +2,8 @@ package nl.openvalue.paulienvanalst.kotlin.spring.coroutines
 
 
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.reactive.asFlow
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -9,7 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.reactive.function.server.bodyAndAwait
 
 @Component
-open class RecipeHandler() {
+open class RecipeHandler(private val recipesRepository: RecipesRepository, private val recipesRepository2: RecipesRepository2) {
 
     suspend fun findAll(request: ServerRequest): ServerResponse {
 
@@ -17,7 +19,17 @@ open class RecipeHandler() {
             pancakes, scrambledEggs, fondue
         )
 
-        return ok().bodyAndAwait(recipes)
+        val recipes2 = recipesRepository.findAll()
+            .map {
+                Recipe(it.name, it.duration, listOf(), "")
+            }.asFlow()
+
+        val recipes3 = recipesRepository2.findAll()
+            .transform {
+                emit(Recipe(it.name, it.duration, listOf(), ""))
+            }
+
+        return ok().bodyAndAwait(recipes3)
     }
 }
 
