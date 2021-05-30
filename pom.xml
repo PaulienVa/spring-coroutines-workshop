@@ -41,7 +41,6 @@
             <version>${kotlin-coroutines.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit5</artifactId>
@@ -67,7 +66,6 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 
