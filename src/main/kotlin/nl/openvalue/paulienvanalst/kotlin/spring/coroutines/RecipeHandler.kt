@@ -1,23 +1,29 @@
 package nl.openvalue.paulienvanalst.kotlin.spring.coroutines
 
-//import kotlinx.coroutines.flow.flowOf
-//import org.springframework.stereotype.Component
-//import org.springframework.web.reactive.function.server.ServerRequest
-//import org.springframework.web.reactive.function.server.ServerResponse
-//import org.springframework.web.reactive.function.server.ServerResponse.ok
-//import org.springframework.web.reactive.function.server.bodyAndAwait
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.reactive.asFlow
+import org.springframework.stereotype.Component
 
-//@Component
-open class RecipeHandler() {
+@Component
+open class RecipeHandler(
+    private val repository: RecipeCrudRepository,
+    private val coroutineRepository: RecipeCoroutineRepository
+) {
 
-//    suspend fun findAll(request: ServerRequest): ServerResponse {
-//
-//        val recipes = flowOf(
-//            pancakes, scrambledEggs, fondue
-//        )
-//
-//        return ok().bodyAndAwait(recipes)
-//    }
+    fun findAll(): Flow<Recipe> {
+        val noDB = flowOf(
+            pancakes, scrambledEggs, fondue
+        )
+
+        val crudDB = repository.retrieveAll().map { Recipe(it.name, it.duration.toInt(), listOf(), "Something") }.asFlow()
+
+        val coroutineDB = coroutineRepository.retrieveAll().map { Recipe(it.name, it.duration.toInt(), listOf(), "Something") }
+
+        return coroutineDB
+    }
 }
 
 private val pancakes = Recipe(

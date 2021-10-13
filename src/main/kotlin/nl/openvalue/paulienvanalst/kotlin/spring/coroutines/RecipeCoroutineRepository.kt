@@ -6,7 +6,7 @@ import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface CoroutineRepository : CoroutineCrudRepository<RecipeRow, Long> {
+interface RecipeCoroutineRepository : CoroutineCrudRepository<RecipeRow, Long> {
     @Query("SELECT * FROM recipes;")
     fun retrieveAll() : Flow<RecipeRow>
 }
